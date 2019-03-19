@@ -6,9 +6,9 @@ public class Run {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void writeToFile() {
+	public void writeToFile(BufferedWriter writer) {
 		// TODO Auto-generated method stub
-		
+		// user writter as normal
 	}
 
 	public boolean isEmpty() {
