@@ -60,11 +60,16 @@ public class Main {
 		line = scanner.nextLine();
 		heap.push(line);
 	    }
-
+	    
+	    File outputFile = new File(outputFilepath);
+	BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
+	    
+	    try
+	    {
 	    while(scanner.hasNext()) {
 		if(heap.isNewRun()){
 		    heap.reheap();
-		    run.writeToFile();
+		    run.writeToFile(writer);	//*
 		    totalRuns++;
 		    run = new Run(runSize);
 		}
@@ -83,7 +88,7 @@ public class Main {
 		while(!heap.isEmpty()){
 		    if(heap.isNewRun()){
 			heap.reheap();
-			run.writeToFile();
+			run.writeToFile(writer);	//*
 			totalRuns++;
 			run = new Run(runSize);
 		    }
@@ -92,10 +97,13 @@ public class Main {
 		    }
 		}
 
-		run.writeToFile();
+		run.writeToFile(writer);	//*
 		totalRuns++;
 
 		scanner.close();
+	    }finally{
+		writer.close;    
+	    }
 
 		File outputFile = new File(outputFilepath);
 		distributeRuns();
