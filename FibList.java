@@ -26,6 +26,7 @@ public class FibList{
 	}
 	runs[0] = 0; //set the first file to have zero runs, while the rest still have one, this is the end case we want to result in.
 
+	//while the number of runs distributed < the total runs, distrube another layer of runs
 	while(Distribute() < totalRuns){
 		nextLayer();
 	}
@@ -39,7 +40,7 @@ public class FibList{
 		return total;
 	}
 	
-	//
+	//distributes another layer of runs to each file based on current fibonacci number
 	public void nextLayer(){
 		int i = 0;
 		int z = findZero(); // get the index containig 0 runs.
