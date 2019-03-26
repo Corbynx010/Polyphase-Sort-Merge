@@ -23,10 +23,10 @@ public class Main {
 	}
 	for(int i = 0; i <= args.length; i++){
 	    try{
-	    if(args[i].equalsIgnoreCase("//R")){
+	    /*if(args[i].equalsIgnoreCase("//R")){
 	    	runSize = Integer.parseInt(args[i+1]);
-	    }
-	    else if(args[i].equalsIgnoreCase("//P")){
+	    }*/
+	    if(args[i].equalsIgnoreCase("//P")){
 	    	maxFileNum = Integer.parseInt(args[i+1]);
 	    }
 	    else if(args[i].equalsIgnoreCase("//O")){
@@ -42,7 +42,7 @@ public class Main {
 	
 	    int totalRuns = 0;
 	    Heap heap = new Heap(runSize);
-	    Run run = new Run(runSize);
+	    Run run = new Run();
 
 	    //Read File or system.in
 	    Scanner scanner;
@@ -62,7 +62,9 @@ public class Main {
 	    }
 	    
 	    File outputFile = new File(outputFilepath);
-	BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
+
+		PrintWriter writer = new PrintWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
+
 	    
 	    try
 	    {
@@ -71,7 +73,7 @@ public class Main {
 		    heap.reheap();
 		    run.writeToFile(writer);	//*
 		    totalRuns++;
-		    run = new Run(runSize);
+		    run = new Run();
 		}
 		if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) >= 0)){
 		    run.append(heap.pop());
@@ -90,7 +92,7 @@ public class Main {
 			heap.reheap();
 			run.writeToFile(writer);	//*
 			totalRuns++;
-			run = new Run(runSize);
+			run = new Run();
 		    }
 		    if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) >= 0)){
 			run.append(heap.pop());			
@@ -102,12 +104,20 @@ public class Main {
 
 		scanner.close();
 	    }finally{
-		writer.close;    
+
+		writer.close();    
+
 	    }
 
 		File outputFile = new File(outputFilepath);
-		distributeRuns();
-		polyPhase();
+
+		FibList fibList = new FibList(maxFileNum,totalRuns);
+
+		//needs a distributeRuns and polyphase method implemented within main?
+		
+		//distributeRuns();
+		//polyPhase();
+
 		//write to output
     }
 }
