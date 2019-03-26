@@ -13,11 +13,8 @@ public class Run {
 	}
 
 	//Writes each run to the same file, seperated by an '*'
-	public void writeToFile(String fileDirectory) throws IOException {
+	public void writeToFile(BufferedWriter writer) throws IOException {
 		
-		File outputFile = new File(fileDirectory + File.seperator + "temp.txt");
-		PrintWriter writer = new PrintWriter(new FileWriter(outputFile, true));
-
 		for(String s : run){
 			writer.println(s);
 		}

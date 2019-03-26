@@ -23,10 +23,10 @@ public class Main {
 	}
 	for(int i = 0; i <= args.length; i++){
 	    try{
-	    if(args[i].equalsIgnoreCase("//R")){
+	    /*if(args[i].equalsIgnoreCase("//R")){
 	    	runSize = Integer.parseInt(args[i+1]);
-	    }
-	    else if(args[i].equalsIgnoreCase("//P")){
+	    }*/
+	    if(args[i].equalsIgnoreCase("//P")){
 	    	maxFileNum = Integer.parseInt(args[i+1]);
 	    }
 	    else if(args[i].equalsIgnoreCase("//O")){
@@ -42,7 +42,7 @@ public class Main {
 	
 	    int totalRuns = 0;
 	    Heap heap = new Heap(runSize);
-	    Run run = new Run(runSize);
+	    Run run = new Run();
 
 	    //Read File or system.in
 	    Scanner scanner;
@@ -60,13 +60,18 @@ public class Main {
 		line = scanner.nextLine();
 		heap.push(line);
 	    }
-
+	    
+	    File outputFile = new File(outputFilepath);
+		BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
+	    
+	    try
+	    {
 	    while(scanner.hasNext()) {
 		if(heap.isNewRun()){
 		    heap.reheap();
-		    run.writeToFile();
+		    run.writeToFile(writer);	//*
 		    totalRuns++;
-		    run = new Run(runSize);
+		    run = new Run();
 		}
 		if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) >= 0)){
 		    run.append(heap.pop());
@@ -83,19 +88,22 @@ public class Main {
 		while(!heap.isEmpty()){
 		    if(heap.isNewRun()){
 			heap.reheap();
-			run.writeToFile();
+			run.writeToFile(writer);	//*
 			totalRuns++;
-			run = new Run(runSize);
+			run = new Run();
 		    }
 		    if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) >= 0)){
 			run.append(heap.pop());			
 		    }
 		}
 
-		run.writeToFile();
+		run.writeToFile(writer);	//*
 		totalRuns++;
 
 		scanner.close();
+	    }finally{
+		writer.close;    
+	    }
 
 		File outputFile = new File(outputFilepath);
 		distributeRuns();
