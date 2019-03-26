@@ -1,27 +1,35 @@
 package minHeap;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Run {
 
 	private int size; // size of the current run
-	private arrayList<String> run; // array list to store a run
-	
+	private ArrayList<String> run; // array list to store a run
+	private PrintWriter myWriter;
 
 	public Run() {
 		
-		run = new arrayList<String>();
+		run = new ArrayList<String>();
 		size = 0; //set the inital size to zero, empty
 	}
 
 	//Writes each run to the same file, seperated by an '*'
-	public void writeToFile(BufferedWriter writer) throws IOException {
+	public void writeToFile(PrintWriter writer) throws IOException {
 		
+		myWriter = writer;		
+
 		for(String s : run){
-			writer.println(s);
+			myWriter.println(s);
 		}
 
-		writer.println("*");
-
-		writer.close();
+		myWriter.println("*");
+		myWriter.flush();
+		myWriter.close();
 	}
 
 	//check if the run is empty
@@ -38,7 +46,7 @@ public class Run {
 	//return the last item in the run
 	public String peekEnd() {
 		
-		String last = run.get(run.size()-1) 
+		String last = run.get(run.size()-1);
 		return last;
 	}
 

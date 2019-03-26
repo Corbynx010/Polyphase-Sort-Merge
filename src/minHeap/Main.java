@@ -62,7 +62,7 @@ public class Main {
 	    }
 	    
 	    File outputFile = new File(outputFilepath);
-		BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
+		PrintWriter writer = new PrintWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
 	    
 	    try
 	    {
@@ -102,12 +102,18 @@ public class Main {
 
 		scanner.close();
 	    }finally{
-		writer.close;    
+		writer.close();    
 	    }
 
 		File outputFile = new File(outputFilepath);
-		distributeRuns();
-		polyPhase();
+
+		FibList fibList = new FibList(maxFileNum,totalRuns);
+
+		//needs a distributeRuns and polyphase method implemented within main?
+		
+		//distributeRuns();
+		//polyPhase();
+
 		//write to output
     }
 }
