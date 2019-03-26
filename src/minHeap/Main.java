@@ -62,7 +62,9 @@ public class Main {
 	    }
 	    
 	    File outputFile = new File(outputFilepath);
+
 		PrintWriter writer = new PrintWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
+
 	    
 	    try
 	    {
@@ -102,7 +104,9 @@ public class Main {
 
 		scanner.close();
 	    }finally{
+
 		writer.close();    
+
 	    }
 
 		File outputFile = new File(outputFilepath);

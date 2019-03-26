@@ -30,6 +30,7 @@ public class Run {
 		myWriter.println("*");
 		myWriter.flush();
 		myWriter.close();
+
 	}
 
 	//check if the run is empty
