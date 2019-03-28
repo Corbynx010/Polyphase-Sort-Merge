@@ -65,7 +65,7 @@ public class Heap {
     }
 
 	public boolean isNewRun(){
-	if(size == 0 && currentUndersize > 0){
+	if(size <= 0 && currentUndersize > 0){
 	    return true;
 	}
 	return false;
@@ -86,23 +86,26 @@ public class Heap {
 	    }
 	}
 	heap = newHeap.heap;
+	currentUndersize = newHeap.currentUndersize;
+	size = newHeap.size;
 	}
 
     public Node pop(){
-	Node returnNode = heap[0];
-	heap[0] = heap[size];
+	Node returnNode = heap[1];
+	heap[1] = heap[size];
 	heap[size] = null;
 	size = size-1;
-	downheap(0);
+	downheap(1);
 	return returnNode;
     }
 
     public Node peek(){
-	Node tempNode = new Node(heap[0].Key);
+	Node tempNode = new Node(heap[1].Key);
 	return tempNode;
     }
 
     private boolean isSmallerThan(int n1, int n2){
+    	if(n2 == 0) { return false; }
 	if(heap[n1].Key.compareTo(heap[n2].Key) <= 0){
 	    return true;
 	}
@@ -110,7 +113,7 @@ public class Heap {
     }
 
     public boolean isFull(){
-	if(size + currentUndersize >= capacity){
+	if(size + currentUndersize >= capacity -1){
 	    return true;
 	}
 	else{

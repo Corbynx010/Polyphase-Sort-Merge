@@ -52,8 +52,9 @@ public class FibList{
 		int nextFib = fib[0];// get next fibbonaci number.
 		
 		//iterate through files distrubting runs equal to current fibonacci number to each file
-		while(i < numfiles){
+		while(i < numFiles){
 			runs[i] += nextFib; //initial number = second 1.
+			i++;
 		}
 
 		//we dont want to set the same file that was zero to be zero again so we instead set the next file to be zero,

@@ -5,7 +5,9 @@ public class Node {
 	public String Key;
 
 	public Node(String s) {
-		// TODO Auto-generated constructor stub
+		Key = s;
 	}
+	
+	public String getKey() { return Key; }
 
 }

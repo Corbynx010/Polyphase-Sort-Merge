@@ -9,7 +9,7 @@ import java.util.List;
 public class Run {
 
 	private int size; // size of the current run
-	private ArrayList<String> run; // array list to store a run
+	private List<String> run; // array list to store a run
 	private PrintWriter myWriter;
 
 	public Run() {
@@ -29,7 +29,6 @@ public class Run {
 
 		myWriter.println("*");
 		myWriter.flush();
-		myWriter.close();
 
 	}
 
@@ -54,7 +53,7 @@ public class Run {
 	//add a node to the run
 	public void append(Node pop) {
 
-		run.add(pop);
+		run.add(pop.getKey());
 		size++;
 		
 	}

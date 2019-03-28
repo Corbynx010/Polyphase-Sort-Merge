@@ -11,7 +11,7 @@ public class Main {
       /I -- Defines Input Filepath
       Format "Polymerge /R 77 /O c:/users/test.txt"
      */
-    public static void main(String[] args){
+    public static void main(String[] args) throws IOException{
         int runSize = 0;
         int maxFileNum = 0;
         String outputFilepath = "";
@@ -21,22 +21,22 @@ public class Main {
 	    System.out.println("Please input arguments i.e. \"Polymerge /R 77 /O c:/users/test.txt\"");
 	    return;
 	}
-	for(int i = 0; i <= args.length; i++){
+	for(int i = 0; i < args.length; i++){
 	    try{
-	    /*if(args[i].equalsIgnoreCase("//R")){
+	    if(args[i].equalsIgnoreCase("/R")){
 	    	runSize = Integer.parseInt(args[i+1]);
-	    }*/
-	    if(args[i].equalsIgnoreCase("//P")){
+	    }
+	    if(args[i].equalsIgnoreCase("/F")){
 	    	maxFileNum = Integer.parseInt(args[i+1]);
 	    }
-	    else if(args[i].equalsIgnoreCase("//O")){
+	    else if(args[i].equalsIgnoreCase("/O")){
 	    	outputFilepath = args[i+1];
 	    }
-	    else if(args[i].equalsIgnoreCase("//I")){
+	    else if(args[i].equalsIgnoreCase("/I")){
 	    	inputFilepath = args[i+1];
 	    }
 	    }catch(Exception e){
-		System.err.println("Please input valid input arguments");
+		System.err.println("Please input valid input arguments, " + runSize + ", " + maxFileNum + ", " + outputFilepath + ", " + inputFilepath +", " + e);
 	    }
 	}
 	
@@ -55,38 +55,86 @@ public class Main {
 	    }	    
 	    String line = "";
 
+	    String[] overLap = new String[line.length()];
 	    //Fill initial heap
-	    while(scanner.hasNext() && !heap.isFull()){
+	    while(scanner.hasNext()){
 		line = scanner.nextLine();
-		heap.push(line);
+		if(!line.equals("")) {
+				String[] splitLine = line.split(" ");
+				overLap = new String[splitLine.length];
+				int oLi = 0;
+				for(int i = 0; i < splitLine.length; i++) {
+					if(!(splitLine[i] == null || splitLine[i].equals("") || splitLine[i].equals(" "))) {
+						if(!heap.isFull()) {
+						heap.push(splitLine[i]);
+						}
+						else {	//as we are splitting the line we need to keep track of the rest of the line that doesnt fit in the heap
+							overLap[oLi] = splitLine[i];
+							oLi++;
+						}
+					}
+				}
+				if(heap.isFull()) {break;}
+			}
 	    }
 	    
-	    File outputFile = new File(outputFilepath);
+	    File outputFile = new File(outputFilepath);	//This is the file we will write the final output data to
+	    PrintWriter writer = new PrintWriter(new FileWriter(outputFile.getParent() + File.separator + "temp.txt"));	//create new temp file in the same dirrectory as the output file
 
-		PrintWriter writer = new PrintWriter(new FileWriter(outputFile.getParentDirectory() + File.seperator + "temp.txt"));
-
-	    
-	    try
-	    {
-	    while(scanner.hasNext()) {
-		if(heap.isNewRun()){
-		    heap.reheap();
-		    run.writeToFile(writer);	//*
-		    totalRuns++;
-		    run = new Run();
-		}
-		if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) >= 0)){
-		    run.append(heap.pop());
-		    line = scanner.nextLine();
-		    if(line.compareTo(run.peekEnd()) >= 0){
-			    heap.place(line);
+	    try {
+	    //Generate runs
+	    do {
+	    	for(int i = 0; i < overLap.length; i++) {
+				if(!(overLap[i] == null || overLap[i].equals("") || overLap[i].equals(" "))) {
+					if(heap.isNewRun()){
+				    	heap.reheap();
+				    	run.writeToFile(writer);	//*
+				    	totalRuns++;
+				    	run = new Run();
+					}
+					if(!heap.isNewRun()) {
+				    	run.append(heap.pop());
+				    	if(overLap[i].compareTo(run.peekEnd()) <= 0){
+				    		heap.place(overLap[i]);
+						}
+						else{
+					    	heap.push(overLap[i]);
+						}
+					}
+				}
+				else { break; } 
 			}
-			else{
-			    heap.push(line);
-			}
-		}
-	    }
-
+			line = scanner.nextLine();
+	    	if(!line.equals("")) {
+				String[] splitLine = line.split(" ");
+				overLap = new String[splitLine.length];
+				int oLi = 0;
+				for(int i = 0; i < splitLine.length; i++) {
+					if(!(splitLine[i] == null || splitLine[i].equals("") || splitLine[i].equals(" "))) {
+						if(heap.isNewRun()){
+					    	heap.reheap();
+					    	run.writeToFile(writer);	//*
+					    	totalRuns++;
+					    	run = new Run();
+						}
+						if(!heap.isNewRun()) {
+					    	run.append(heap.pop());
+					    	if(splitLine[i].compareTo(run.peekEnd()) <= 0){
+						    	heap.place(splitLine[i]);
+							}
+							else{
+						    	heap.push(splitLine[i]);
+							}
+						}
+						else {
+							overLap[oLi] = splitLine[i];
+							oLi++;
+						}
+					}
+				}	
+			}		
+	    } while(scanner.hasNext());
+	    //empty the heap after file is fully read
 		while(!heap.isEmpty()){
 		    if(heap.isNewRun()){
 			heap.reheap();
@@ -94,7 +142,7 @@ public class Main {
 			totalRuns++;
 			run = new Run();
 		    }
-		    if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) >= 0)){
+		    if(run.isEmpty() || !(run.peekEnd().compareTo((heap.peek().Key)) > 0)){
 			run.append(heap.pop());			
 		    }
 		}
@@ -103,19 +151,17 @@ public class Main {
 		totalRuns++;
 
 		scanner.close();
-	    }finally{
-
-		writer.close();    
-
 	    }
-
-		File outputFile = new File(outputFilepath);
+	    finally{
+	    	writer.close();    
+	    }
 
 		FibList fibList = new FibList(maxFileNum,totalRuns);
 
 		//needs a distributeRuns and polyphase method implemented within main?
-		
-		//distributeRuns();
+		//we dont need distribute as you added it to the constructor of fibList.
+		//PolyPhase is just the merge sort of the already created and sorted runs.
+
 		//polyPhase();
 
 		//write to output
