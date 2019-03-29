@@ -2,9 +2,18 @@ package minHeap;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
+	
+	static FibList fibList;
+	static File outputFile;
+    static int runSize = 0;
+    static int maxFileNum = 0;
+    static String outputFilepath = "";
+    static String inputFilepath = "";
     /*
       /R -- Defines max run size
       /F -- Defines the max file number
@@ -13,10 +22,7 @@ public class Main {
       Format "Polymerge /R 77 /O c:/users/test.txt"
      */
     public static void main(String[] args) throws IOException{
-        int runSize = 0;
-        int maxFileNum = 0;
-        String outputFilepath = "";
-        String inputFilepath = "";
+
 	//Deal with input arguments
 	if (args.length == 0){
 	    System.out.println("Please input arguments i.e. \"Polymerge /R 77 /O c:/users/test.txt\"");
@@ -78,8 +84,7 @@ public class Main {
 				if(heap.isFull()) {break;}
 			}
 	    }
-	    
-	    File outputFile = new File(outputFilepath);	//This is the file we will write the final output data to
+	    outputFile = new File(outputFilepath);	//This is the file we will write the final output data to
 	    PrintWriter writer = new PrintWriter(new FileWriter(outputFile.getParent() + File.separator + "temp.txt"));	//create new temp file in the same dirrectory as the output file
 
 	    try {
@@ -157,22 +162,16 @@ public class Main {
 	    	writer.close();    
 	    }
 
-		FibList fibList = new FibList(maxFileNum,totalRuns);
+		fibList = new FibList(maxFileNum,totalRuns);
 
 		//PolyPhase is just the merge sort of the already created and sorted runs.
 
-		//polyPhase();
-		//distributeRuns();
-		//write to output
-
-		public static void distributeRuns(){
-        //*
 		    // Opens the temp file runs are stored in
 		    File tempFile = new File(outputFile.getParent() + File.separator + "temp.txt");
 		    Scanner sc = new Scanner(tempFile);
 		    
 		    // Gets the distribution int [] to use to set the correct amount of runs
-		    int[] fibConfig = new int[maxFileNum + 1]; // why +1?
+		    int[] fibConfig = new int[maxFileNum]; // why +1?
 		    
 		    // Location by index of the first zero lengthfile
 		    int zero = fibList.findZero();
@@ -181,13 +180,15 @@ public class Main {
 		    if(zero == 0){currentFile = 1; }
 		    
 		    // Opens first file to output runs to
-		    File currentOutput = new File(outputFilepath + File.separator + "output" + currentFile + ".txt");
-		    writer = new PrintWriter(new FileWriter(currentOutput, true));
+		    FileWriter currentOutput = new FileWriter(outputFile.getParent() + File.separator + "output" + currentFile + ".txt");
+		    writer = new PrintWriter(currentOutput);
 		    
 		    
 		    System.err.println("Initial distribution of runs: " + Arrays.toString(fibList.runs));
 		    
 		    // While the tempFile isn't empty, runs are distributed across the output files
+
+	        
 		    while(sc.hasNext()) {
 		        
 		        line = sc.nextLine();
@@ -202,9 +203,9 @@ public class Main {
 		                }
 		                
 		                // Opens next output file when correct amount of runs are added to the last
-		                currentOutput = new File(outputFilepath + File.separator + "output" + currentFile + ".txt");
+		                currentOutput = new FileWriter(outputFile.getParent() + File.separator + "output" + currentFile + ".txt");
 		                writer.close();
-		                writer = new PrintWriter(new FileWriter(currentOutput, true));
+		                writer = new PrintWriter(currentOutput);
 		            }
 		        }
 		        else {
@@ -223,17 +224,98 @@ public class Main {
 		            if (currentFile == zero) currentFile++;
 		            
 		            // Opens new output file in the correct amount of dummy runs haven't been added yet
-		            currentOutput = new File(outputFilepath + File.separator + "output" + currentFile + ".txt");
+		            currentOutput = new FileWriter(outputFile.getParent() + File.separator + "output" + currentFile + ".txt");
 		            writer.close();
-		            writer = new PrintWriter(new FileWriter(currentOutput, true));
+		            writer = new PrintWriter(currentOutput);
 		        }
-		        if (currentFile > maxFileNum) break;
+		        if (currentFile >= maxFileNum) break;
 		    }
+		    
+		    currentOutput = new FileWriter(outputFile.getParent() + File.separator + "output" + zero + ".txt");
+            writer.close();
+            writer = new PrintWriter(currentOutput);
 		    
 		    // Closes last writer and scanner
 		    writer.close();
-		    sc.close();//*/
+		    sc.close();
+		    
+		    Heap OutputHeads = new Heap(maxFileNum);
+	        List<ScannerNode> scanners = new ArrayList<ScannerNode>();
+	        
+	        // Find the file that will be open to input and create a writer for that file
+	        File input = new File(outputFile.getParent() + File.separator + "output" + zero + ".txt");
+	        PrintWriter inputWriter = new PrintWriter(new FileWriter(input));
+	        
+	        // Create a scanner for each output file we will be using.
+	        for (int i = 0; i <= maxFileNum; i++) {
+	            File outputFile = new File(outputFile.getParent() + File.separator + "output" + i + ".txt");
+	            Scanner sc1 = new Scanner(outputFile);
+	            ScannerNode sn = new ScannerNode(sc1, i);
+	            scanners.add(sn);
+	        }
+	        
+	        // Remove text from a file until each file has processed an entire run
+	        int RunsToRemove = fibList.fib[0];
+	        
+	        while (RunsToRemove > 0){
+	            
+	            RunsToRemove--;
+	            
+	            // Create the heap by storing the head of each run that is open for output
+	            for (ScannerNode sn : scanners){
+	                if (sn.outputNum == zero){ continue; }
+	                if (sn.nextValue() != null) OutputHeads.push(sn.value, sn.outputNum);
+	            }
+	            
+	            // Continue while the heap still has values in it
+	            while(!OutputHeads.isEmpty()){
+	                
+	                Node n = OutputHeads.pop();
+	                
+	                if (!n.Key.equals("*")) { 
+	                    inputWriter.println(n.Key);
+	                    inputWriter.flush();
+	                    for (ScannerNode sn : scanners){
+	                        if (sn.outputNum == n.Output){
+	                            OutputHeads.push(sn.nextValue(), sn.outputNum);
+	                        }
+	                    }					
+	                }	
+	            }
+	            inputWriter.println("*");
+	            inputWriter.flush();
+	            
+	        }
+	        
+	        inputWriter.close();
+	        
+	        for (ScannerNode sn : scanners) {
+	            if (sn.outputNum != zero) {
+	                updateOutput(tempdir + File.separator + "output" + sn.outputNum + ".txt", fibL.FibNum[0]);
+	            }
+	            sn.sc.close();
+	        }
+	        
+	        zero--;
+	        if(zero < 0) zero = numfiles;
+	        
+	        
+	        
+	        if(fibL.FibNum[0] == 0) { 
+	            cleanUp();
+	            System.err.println("Sort Complete After " + operations + " Passes.");
+	        }
+	        else {
+	            fibL.lastFib();
+	            operations++;
+	            System.err.println("Sort Operations Completed: " + operations);
+	            polyPhase(zero);
+	}
+		    
+		    
 		}
 
-    }
+	//polyPhase();
+	//write to output
+    //*
 }
