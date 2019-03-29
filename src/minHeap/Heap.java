@@ -20,6 +20,14 @@ public class Heap {
 	int current = size;
 	upheap(current);
     }
+    
+    public void pushWithLocation(String s, int o){	
+    	size = size+1;
+    	Node n = new Node(s, o);
+    	heap[size] = n;
+    	int current = size;
+    	upheap(current);
+        }
 
     public void place(String s){
 	currentUndersize++;

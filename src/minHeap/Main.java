@@ -239,6 +239,8 @@ public class Main {
 		    writer.close();
 		    sc.close();
 		    
+		    //////////////////
+		    
 		    Heap OutputHeads = new Heap(maxFileNum);
 	        List<ScannerNode> scanners = new ArrayList<ScannerNode>();
 	        
@@ -263,8 +265,8 @@ public class Main {
 	            
 	            // Create the heap by storing the head of each run that is open for output
 	            for (ScannerNode sn : scanners){
-	                if (sn.outputNum == zero){ continue; }
-	                if (sn.nextValue() != null) OutputHeads.push(sn.value, sn.outputNum);
+	                if (sn.outputID == zero){ continue; }
+	                if (sn.next() != null) OutputHeads.pushWithLocation(sn.line, sn.outputID);
 	            }
 	            
 	            // Continue while the heap still has values in it
@@ -276,8 +278,8 @@ public class Main {
 	                    inputWriter.println(n.Key);
 	                    inputWriter.flush();
 	                    for (ScannerNode sn : scanners){
-	                        if (sn.outputNum == n.Output){
-	                            OutputHeads.push(sn.nextValue(), sn.outputNum);
+	                        if (sn.outputID == n.Output){
+	                            OutputHeads.pushWithLocation(sn.next(), sn.outputID);
 	                        }
 	                    }					
 	                }	
@@ -290,23 +292,23 @@ public class Main {
 	        inputWriter.close();
 	        
 	        for (ScannerNode sn : scanners) {
-	            if (sn.outputNum != zero) {
-	                updateOutput(tempdir + File.separator + "output" + sn.outputNum + ".txt", fibL.FibNum[0]);
+	            if (sn.outputID != zero) {
+	                updateOutput(tempdir + File.separator + "output" + sn.outputID + ".txt", fibList.FibNum[0]);
 	            }
 	            sn.sc.close();
 	        }
 	        
 	        zero--;
-	        if(zero < 0) zero = numfiles;
+	        if(zero < 0) zero = maxFileNum;
 	        
 	        
 	        
-	        if(fibL.FibNum[0] == 0) { 
+	        if(fibList.fib[0] == 0) { 
 	            cleanUp();
 	            System.err.println("Sort Complete After " + operations + " Passes.");
 	        }
 	        else {
-	            fibL.lastFib();
+	            fibList.lastFib();
 	            operations++;
 	            System.err.println("Sort Operations Completed: " + operations);
 	            polyPhase(zero);

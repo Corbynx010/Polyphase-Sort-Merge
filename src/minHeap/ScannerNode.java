@@ -1,15 +1,15 @@
 package minHeap;
 
-import java.util.scnaner;
+import java.util.Scanner;
 
 public class ScannerNode{
 
 	public Scanner sc;
     public int outputID;
-	public String next = null;
+	public String line = null;
 	
-	public Scannernode(Scanner s, int id){
-		Scanner = s;
+	public ScannerNode(Scanner s, int id){
+		sc = s;
 		outputID = id;
 		
 	}
@@ -17,8 +17,8 @@ public class ScannerNode{
 	public String next(){
 		
 		if(sc.hasNext()){
-			next = sc.nextLine();
-			return next;
+			line = sc.nextLine();
+			return line;
 		}
 		
 		return null;
