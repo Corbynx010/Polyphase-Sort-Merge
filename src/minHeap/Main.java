@@ -2,6 +2,7 @@ package minHeap;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class Main {
     /*
@@ -158,12 +159,81 @@ public class Main {
 
 		FibList fibList = new FibList(maxFileNum,totalRuns);
 
-		//needs a distributeRuns and polyphase method implemented within main?
-		//we dont need distribute as you added it to the constructor of fibList.
 		//PolyPhase is just the merge sort of the already created and sorted runs.
 
 		//polyPhase();
-
+		//distributeRuns();
 		//write to output
+
+		public static void distributeRuns(){
+        //*
+		    // Opens the temp file runs are stored in
+		    File tempFile = new File(outputFile.getParent() + File.separator + "temp.txt");
+		    Scanner sc = new Scanner(tempFile);
+		    
+		    // Gets the distribution int [] to use to set the correct amount of runs
+		    int[] fibConfig = new int[maxFileNum + 1]; // why +1?
+		    
+		    // Location by index of the first zero lengthfile
+		    int zero = fibList.findZero();
+		    int currentFile = 0;
+		    
+		    if(zero == 0){currentFile = 1; }
+		    
+		    // Opens first file to output runs to
+		    File currentOutput = new File(outputFilepath + File.separator + "output" + currentFile + ".txt");
+		    writer = new PrintWriter(new FileWriter(currentOutput, true));
+		    
+		    
+		    System.err.println("Initial distribution of runs: " + Arrays.toString(fibList.runs));
+		    
+		    // While the tempFile isn't empty, runs are distributed across the output files
+		    while(sc.hasNext()) {
+		        
+		        line = sc.nextLine();
+		        
+		        if (line.equals("*")) {
+		            writer.println("*");// are we keeping these?
+		            fibConfig[currentFile]++;
+		            if (fibConfig[currentFile] == fibList.runs[currentFile]){ // if the correct amount of runs has been distributed? move to the next file
+		                currentFile++;
+		                if (currentFile == zero) { //want index zero to stay empty, so move to next file
+		                    currentFile++;
+		                }
+		                
+		                // Opens next output file when correct amount of runs are added to the last
+		                currentOutput = new File(outputFilepath + File.separator + "output" + currentFile + ".txt");
+		                writer.close();
+		                writer = new PrintWriter(new FileWriter(currentOutput, true));
+		            }
+		        }
+		        else {
+		            writer.println(line);
+		        }
+		    }
+		    
+		    
+		    // Creates the correct amount of dummy runs by adding "*" to the currentOutput file
+		    while(true){
+		        writer.println("*");
+		        fibConfig[currentFile]++;
+		        
+		        if (fibConfig[currentFile] == fibList.runs[currentFile]) {
+		            currentFile++;
+		            if (currentFile == zero) currentFile++;
+		            
+		            // Opens new output file in the correct amount of dummy runs haven't been added yet
+		            currentOutput = new File(outputFilepath + File.separator + "output" + currentFile + ".txt");
+		            writer.close();
+		            writer = new PrintWriter(new FileWriter(currentOutput, true));
+		        }
+		        if (currentFile > maxFileNum) break;
+		    }
+		    
+		    // Closes last writer and scanner
+		    writer.close();
+		    sc.close();//*/
+		}
+
     }
 }
