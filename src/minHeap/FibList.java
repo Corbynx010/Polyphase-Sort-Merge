@@ -27,7 +27,7 @@ public class FibList{
 		runs[0] = 0; //set the first file to have zero runs, while the rest still have one, this is the end case we want to result in.
 
 		//while the number of runs distributed < the total runs, distrube another layer of runs
-		while(distributeRuns() < totalRuns){
+		while(findDistribution() < totalRuns){
 			nextLayer();
 		}
 
@@ -36,7 +36,7 @@ public class FibList{
 	
 	
 	//returns the total number of runs distributed across the files.
-	private int distributeRuns(){
+	private int findDistribution(){
 		int total = 0;
 		for(int i : runs){ // for every file add the number of runs to the total.
 			total += i;
