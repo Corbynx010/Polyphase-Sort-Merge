@@ -1,4 +1,7 @@
-package minHeap;
+//Liam Rodgers 1248912
+//Corbyn Noble-May 1314639
+
+package polyphaseSortMerge;
 
 public class Heap {
 	private Node[] heap;
@@ -90,7 +93,7 @@ public class Heap {
 	Heap newHeap = new Heap(capacity);
 	for(int i = 0; i < capacity; i++){
 	    if(heap[i] != null){
-		newHeap.push(heap[i].Key);
+		newHeap.push(heap[i].stringValue);
 	    }
 	}
 	heap = newHeap.heap;
@@ -108,13 +111,13 @@ public class Heap {
     }
 
     public Node peek(){
-	Node tempNode = new Node(heap[1].Key);
+	Node tempNode = new Node(heap[1].stringValue);
 	return tempNode;
     }
 
     private boolean isSmallerThan(int n1, int n2){
     	if(n2 == 0) { return false; }
-	if(heap[n1].Key.compareTo(heap[n2].Key) <= 0){
+	if(heap[n1].stringValue.compareTo(heap[n2].stringValue) <= 0){
 	    return true;
 	}
 	return false;

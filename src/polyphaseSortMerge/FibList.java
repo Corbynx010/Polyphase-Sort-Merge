@@ -1,7 +1,7 @@
 //Liam Rodgers 1248912
 //Corbyn Noble-May 1314639
 
-package minHeap;
+package polyphaseSortMerge;
 
 public class FibList{
 
@@ -84,4 +84,10 @@ public class FibList{
 			i++;
 		}
 	}
+	
+	public void lastFib() {
+        int t = fib[0];
+        fib[0] = fib[1] - fib[0];
+        fib[1] = t;
+    }
 }

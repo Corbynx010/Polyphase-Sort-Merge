@@ -1,6 +1,7 @@
-package minHeap;
-import java.io.File;
-import java.io.FileWriter;
+//Liam Rodgers 1248912
+//Corbyn Noble-May 1314639
+
+package polyphaseSortMerge;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
